@@ -33,7 +33,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         mapView.addAnnotations(places)
         
         let overlay = places.map{
-            MKCircle(center: $0.coordinate, radius: 200)
+            MKCircle(center: $0.coordinate, radius: 300)
         }
         mapView.addOverlays(overlay)
     }
