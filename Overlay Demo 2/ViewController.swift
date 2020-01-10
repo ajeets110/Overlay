@@ -26,6 +26,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         //locationManager.startUpdatingLocation()
         
         addAnnotation()
+        addPolyLine()
+        addPolygon()
     }
 
     func addAnnotation(){
@@ -37,8 +39,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
         mapView.addOverlays(overlay)
     }
+    
+    func addPolyLine(){
+        let locations = places.map {$0.coordinate}
+        let polyline = MKPolyline(coordinates: locations, count: locations.count)
+        mapView.addOverlay(polyline)
+    }
 
+
+    func addPolygon(){
+        let locations = places.map {$0.coordinate}
+        let polygon = MKPolygon(coordinates: locations, count: locations.count)
+        mapView.addOverlay(polygon)
+    }
 }
+
 
 extension ViewController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -52,9 +67,31 @@ extension ViewController: MKMapViewDelegate{
         }
     }
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
+        if overlay is MKCircle{
+        
         let renderer = MKCircleRenderer(overlay: overlay)
         renderer.fillColor = UIColor.black.withAlphaComponent(0.5)
-        renderer.strokeColor = UIColor.green
+            renderer.strokeColor = UIColor.yellow
+            renderer.lineWidth = 3
         return renderer
-    }
+        }
+        else if overlay is MKPolyline{
+            let renderer = MKPolylineRenderer(overlay: overlay)
+            renderer.fillColor = UIColor.black.withAlphaComponent(0.5)
+                renderer.strokeColor = UIColor.blue
+                renderer.lineWidth = 3
+            return renderer
+            
+        }
+        else if overlay is MKPolygon{
+             let renderer = MKPolygonRenderer(overlay: overlay)
+             renderer.fillColor = UIColor.black.withAlphaComponent(0.5)
+                 renderer.strokeColor = UIColor.black
+                 renderer.lineWidth = 3
+            return renderer
+            
+        }
+        return MKPolylineRenderer()
+}
 }
